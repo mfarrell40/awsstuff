@@ -1,12 +1,6 @@
-rowCount = 0
-team = ""
-
-with open('s3://tf-app-bucket-20251111/statsInput.txt', 'r') as file:
-    content = file.readlines()
-    for line in content:
-        rowCount += 1
-        tokens = line.split(",")
-		
+import json
+import boto3
+import csv	
 		
 s3_client = boto3.client("s3")
 bkt = 'tf-app-bucket-20251111'
