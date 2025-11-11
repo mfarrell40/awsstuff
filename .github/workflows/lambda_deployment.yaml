@@ -1,27 +1,18 @@
-name: Deploy AWS Lambda
-
-on:
-  push:
-    branches: 
-      - main
-
+name: deploy to lambda
+on: [push]
 jobs:
-  deploy:
+
+  deploy_source:
+    name: deploy lambda from source
     runs-on: ubuntu-latest
-    permissions:
-      id-token: write # Required for OIDC authentication
-      contents: read  # Required to check out the repository
     steps:
-      - uses: actions/checkout@v4
-      
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
+      - name: checkout source code
+        uses: actions/checkout@v3
+      - name: default deploy
+        uses: appleboy/lambda-action@v0.2.0
         with:
-          role-to-assume: arn:aws:iam::123456789012:role/GitHubActionRole
-          aws-region: us-east-1
-      
-      - name: Deploy Lambda Function
-        uses: aws-actions/aws-lambda-deploy@v1
-        with:
-          function-name: arn:aws:lambda:us-east-1:768398264112:function:read-stats-s3
-          code-artifacts-dir: ./src
+          aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws_region: us-east-1
+          function_name: arn:aws:lambda:us-east-1:768398264112:function:read-stats-s3
+          source: src/lambda_function.py
